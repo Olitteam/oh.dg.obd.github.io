@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오도근 온보딩</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: #e2e0d8;
+    --accent: #5b4a8b;
+    --accent-light: #eeebf7;
+    --accent2: #4a6080;
+    --accent2-light: #e8eef5;
+    --text: #1e1e1e;
+    --text-muted: #666;
+    --text-dim: #aaa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 22px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(245,244,240,0.96);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 14px; }
+
+  .logo-mark {
+    width: 30px; height: 30px;
+    background: var(--accent);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  .header-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+  .header-sub   { font-size: 12px; color: var(--text-dim); font-weight: 400; }
+
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.18s;
+  }
+
+  .btn:hover         { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn.active        { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .btn-dl:hover      { border-color: var(--accent2); color: var(--accent2); background: var(--accent2-light); }
+
+  .edit-banner {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    border-bottom: 1px solid #c9c0e0;
+    padding: 9px 48px;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  body.edit-mode .edit-banner { display: flex; }
+  .edit-banner-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+  .main { max-width: 880px; margin: 0 auto; padding: 56px 48px 100px; }
+
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub   { color: var(--text-muted); font-size: 14px; max-width: 460px; }
+
+  .hero-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+
+  .hero-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .section { margin-bottom: 52px; }
+
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .section-num    { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-dim); }
+  .section-title  { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .section-line   { flex: 1; height: 1px; background: var(--border); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 12px; }
+  .card-purple { border-left: 3px solid var(--accent); }
+  .card-blue   { border-left: 3px solid var(--accent2); }
+
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  .data-table th {
+    text-align: left;
+    padding: 8px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .data-table tr:last-child td  { border-bottom: none; }
+  .data-table tbody tr:hover td { background: var(--surface2); }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #c9c0e0;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .badge-blue { background: var(--accent2-light); color: var(--accent2); border-color: #bfd0e0; }
+  .badge-new  { background: #fef3e2; color: #b35c00; border-color: #f0c88a; }
+  .badge-gray { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 5px; white-space: nowrap; font-weight: 500; }
+
+  .timeline { display: flex; flex-direction: column; }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 16px;
+    position: relative;
+  }
+
+  .timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 30px; top: 34px; bottom: -6px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-left { display: flex; flex-direction: column; align-items: center; gap: 5px; padding-top: 4px; }
+
+  .timeline-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 6px;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .timeline-dot.blue  { background: var(--accent2); box-shadow: 0 0 0 2px var(--accent2); }
+  .timeline-dot.muted { background: var(--text-dim); box-shadow: 0 0 0 2px var(--text-dim); }
+
+  .timeline-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-dim); text-align: center; line-height: 1.4; }
+
+  .timeline-content { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+  .timeline-content h4 { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+  .timeline-content h4.blue  { color: var(--accent2); }
+  .timeline-content h4.muted { color: var(--text-muted); }
+  .timeline-content ul { list-style: none; padding: 0; }
+
+  .timeline-content ul li {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 2px 0 2px 14px;
+    position: relative;
+  }
+
+  .timeline-content ul li::before { content: '–'; position: absolute; left: 0; color: var(--text-dim); font-size: 11px; }
+
+  .rr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .rr-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .rr-num  { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); margin-bottom: 4px; }
+  .rr-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+  .rr-list  { list-style: none; padding: 0; }
+  .rr-list li { font-size: 12px; color: var(--text-muted); padding: 2px 0 2px 12px; position: relative; }
+  .rr-list li::before { content: '·'; position: absolute; left: 0; color: var(--text-dim); }
+
+  .sku-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+  .sku-table th {
+    padding: 9px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .sku-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .sku-table tbody tr:last-child td { border-bottom: none; }
+  .sku-table tbody tr:hover td { background: var(--surface2); }
+
+  .task-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+
+  .task-header { display: flex; align-items: center; gap: 12px; padding: 18px 24px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+
+  .task-num-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 5px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #c9c0e0;
+  }
+
+  .task-num-badge.t2 { background: var(--accent2-light); color: var(--accent2); border-color: #bfd0e0; }
+
+  .task-title { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  .task-date {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .task-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
+
+  .task-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .task-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .task-items { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+  .task-items li { display: flex; gap: 9px; font-size: 13px; color: var(--text-muted); align-items: flex-start; }
+
+  .item-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); margin-top: 9px; flex-shrink: 0; }
+  .item-dot.blue { background: var(--accent2); }
+
+  .resource-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .resource-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 7px 14px; font-size: 12px; color: var(--text); }
+  .resource-chip span { color: var(--text-dim); margin-right: 5px; }
+
+  .collab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .collab-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+  .collab-org  { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .collab-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  .editable { outline: none; border-radius: 3px; transition: background 0.15s; }
+
+  body.edit-mode .editable {
+    background: #fffbe6;
+    border-bottom: 1px dashed #d4b800;
+    cursor: text;
+    min-width: 20px;
+    display: inline-block;
+  }
+
+  body.edit-mode .editable:focus { background: #fff8d6; border-bottom-color: #b89a00; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="edit-banner">
+  <div class="edit-banner-dot"></div>
+  수정 모드 — 텍스트를 클릭해서 직접 편집하세요
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo-mark">DG</div>
+    <div>
+      <div class="header-title">오도근 온보딩</div>
+      <div class="header-sub">마케팅3팀 리더 · 슬룸</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn" id="editBtn" onclick="toggleEdit()">
+      <span>✏️</span>
+      <span id="editBtnText">수정하기</span>
+    </button>
+    <button class="btn btn-dl" onclick="downloadHTML()">
+      <span>⬇︎</span>
+      <span>다운로드</span>
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="hero">
+    <div>
+      <h1>시장을<br><em>직접 만든다</em></h1>
+      <div class="hero-sub"><span class="editable" contenteditable="false">제품 하나를 띄우기 위해 필요한 것은 무엇이든 설계하고 실행함. 3개월 내 부진 SKU 회생 + 신제품 카테고리 선점 전략을 실제 성과로 입증함.</span></div>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-chip">슬룸 마케팅3팀</div>
+      <div class="hero-chip">2026년 3월 입사</div>
+      <div class="hero-chip">온보딩 3개월</div>
+    </div>
+  </div>
+
+  <!-- 00 현재 팀의 상황 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">00</div>
+      <div class="section-title">현재 팀의 상황 & 기회</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div style="font-size:12px; color:var(--text-muted); margin-bottom:14px; font-weight:400;">
+      도근님이 합류 전 인지해야 할 현재 상황과 기회입니다.
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <div style="display:flex; gap:14px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-left:3px solid #c0392b; border-radius:10px; padding:18px 20px;">
+        <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🔴</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px;">부진 재고 전환 위기</div>
+          <div style="font-size:13px; color:var(--text-muted);"><span class="editable" contenteditable="false">허리편한케어, 발편한케어가 매출이 올라오지 않아 부진재고로 전환되고 있는 상태. 빠른 진단과 매출 회생이 시급함.</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:14px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-left:3px solid #e67e22; border-radius:10px; padding:18px 20px;">
+        <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🟠</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px;">신제품 마케팅 전략 부재</div>
+          <div style="font-size:13px; color:var(--text-muted);"><span class="editable" contenteditable="false">골반마사지기(4월말 런칭), 팔꿈치마사지기 신제품이 있으나 시장 진입 전략이 아직 설계 중인 상태. 골반마사지기 초기 전략은 1팀에서 기반 수립 후 도근님 합류 즉시 인볼브.</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:14px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-left:3px solid #f0c040; border-radius:10px; padding:18px 20px;">
+        <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🟡</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px;">팀 간 협업 구조 미완성</div>
+          <div style="font-size:13px; color:var(--text-muted);"><span class="editable" contenteditable="false">마케팅 1팀·2팀, D2C팀, BM팀, MD허브팀과의 협업 루틴이 아직 자리잡지 않은 상태. 연결 구조를 직접 만들어야 함.</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:14px; align-items:flex-start; background:var(--accent-light); border:1px solid #c9c0e0; border-left:3px solid var(--accent); border-radius:10px; padding:18px 20px;">
+        <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🎯</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--accent); margin-bottom:4px;">도근님의 역할 — 시장을 직접 만드는 사람</div>
+          <div style="font-size:13px; color:var(--text-muted);"><span class="editable" contenteditable="false">브랜드 런칭 A-Z 경험을 바탕으로 제품 하나를 시장에서 살아남게 만드는 전략을 직접 설계하고 실행함. 골반마사지기 블루오션을 선점하고, 27년 관절 카테고리 확장의 기반을 만듦.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 01 담당 제품 & 팀 목표 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">담당 제품 & 팀 목표 (지표 중심)</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">담당 SKU별 목표</div>
+
+    <div class="card" style="padding:0; overflow:hidden; margin-bottom:12px;">
+      <table class="sku-table">
+        <thead>
+          <tr><th>SKU</th><th>구분</th><th>공헌이익 목표</th><th>운영 방향</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600;">허리편한케어 V1+V2</td>
+            <td><span class="badge">부진 회생</span></td>
+            <td><span class="badge badge-blue">5% 이상</span></td>
+            <td style="color:var(--text-muted); font-size:12px;"><span class="editable" contenteditable="false">공헌이익 마지노선 유지하며 매출 볼륨 극대화. V3 출시 전 재고 선제 소진 집중.</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">발편한케어 V1+V2</td>
+            <td><span class="badge">부진 회생</span></td>
+            <td><span class="badge badge-blue">8%</span></td>
+            <td style="color:var(--text-muted); font-size:12px;"><span class="editable" contenteditable="false">재고 부담 허편케 대비 낮음. 수익성 개선 집중.</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">골반마사지기</td>
+            <td><span class="badge-new" style="font-family:'DM Mono',monospace;font-size:11px;padding:2px 8px;border-radius:5px;white-space:nowrap;font-weight:500;">신제품</span></td>
+            <td><span class="badge badge-blue">신제품 통일 목표</span></td>
+            <td style="color:var(--text-muted); font-size:12px;"><span class="editable" contenteditable="false">1팀에서 초기 전략·기반 수립 후 도근님 합류 즉시 인볼브. 블루오션 선점 속도 핵심.</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">팔꿈치마사지기</td>
+            <td><span class="badge-new" style="font-family:'DM Mono',monospace;font-size:11px;padding:2px 8px;border-radius:5px;white-space:nowrap;font-weight:500;">신제품</span></td>
+            <td><span class="badge badge-blue">신제품 통일 목표</span></td>
+            <td style="color:var(--text-muted); font-size:12px;"><span class="editable" contenteditable="false">'27년 무릎마사지기로 이어지는 관절 카테고리 확장 기반.</span></td>
+          </tr>
+
+
+        </tbody>
+      </table>
+      <div style="padding:10px 16px; background:var(--surface2); border-top:1px solid var(--border); font-size:11px; color:var(--text-dim);">
+        허편케 — 공헌이익 5% 유지하되 볼륨 우선 (V3 출시 전 최대 소진) / 발편케 — 수익성 8% 목표 / 골반마사지기 — 경쟁사 미진입 블루오션, 시장 선점 속도가 핵심
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 신규입사자 목표 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">신규입사자 목표 (팀 목표 연계)</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="card card-purple" style="margin-bottom:16px;">
+      <div style="font-size:14px; font-weight:600; line-height:1.65; color:var(--text);">
+        <span class="editable" contenteditable="false">3개월 내 담당 SKU의 매출 구조를 직접 진단·설계하고, 부진 SKU 회생과 신제품 카테고리 선점 전략을 실제 성과로 입증함. 제품을 띄우기 위해 필요한 것은 마케팅 실행 외에도 상세페이지·촬영 방향·협업 요청까지 직접 주도함.</span>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-label">1개월차</div>
+        </div>
+        <div class="timeline-content">
+          <h4>제품별 전략 기획</h4>
+          <ul>
+            <li><span class="editable" contenteditable="false">담당 SKU 광고 운용 현황 및 성과 데이터 전수 분석</span></li>
+            <li><span class="editable" contenteditable="false">허리/발편케 부진 원인 진단 — 소재, 타겟, 채널, 상세페이지 전 영역</span></li>
+            <li><span class="editable" contenteditable="false">부진 2개 SKU 회생 플랜 수립 및 실행 착수</span></li>
+            <li><span class="editable" contenteditable="false">골반마사지기 초기 전략 1팀과 협업하며 인볼브 — 시장 분석, 타겟 고객, 진입 방향</span></li>
+            <li><span class="editable" contenteditable="false">라이프마케팅실 전체 목표 구조 이해 및 팀 목표 연결 설계</span></li>
+            <li><strong>TASK 01 발표 (5주차)</strong> — 제품별 전략 기획서</li>
+          </ul>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot blue"></div>
+          <div class="timeline-label">2개월차</div>
+        </div>
+        <div class="timeline-content">
+          <h4 class="blue">팀원 평가 & 리더십</h4>
+          <ul>
+            <li><span class="editable" contenteditable="false">팀원 개별 면담 완료 — 역량(마케팅 실무 숙련도, 전략 기획력)·태도(자기주도성, 협업 방식) 두 축 평가</span></li>
+            <li><span class="editable" contenteditable="false">팀원별 R&R 및 SKU 담당 배분 확정 (역량 평가 결과 반영)</span></li>
+            <li><span class="editable" contenteditable="false">팀 운영 체계 설계 — 회의 주기, 성과 리뷰, 피드백 프로세스</span></li>
+            <li><span class="editable" contenteditable="false">BM팀·D2C팀·MD허브팀 협업 구조 설계 및 첫 협업 착수</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-dot muted"></div>
+          <div class="timeline-label">3개월차</div>
+        </div>
+        <div class="timeline-content">
+          <h4 class="muted">검증 & 고도화</h4>
+          <ul>
+            <li><span class="editable" contenteditable="false">부진 SKU 2개 매출 반등 지표 검증 (공헌이익 목표치 달성 여부)</span></li>
+            <li><span class="editable" contenteditable="false">골반마사지기 초기 성과 확인 및 스케일업 전략 보고</span></li>
+            <li><span class="editable" contenteditable="false">팀원 역량 평가 및 팀 운용 방안 보고</span></li>
+            <li><span class="editable" contenteditable="false">관절 카테고리 확장 로드맵 초안 제시 (팔꿈치 → 무릎 시리즈 연결)</span></li>
+            <li><span class="editable" contenteditable="false">다음 분기 팀 목표 초안 — 바텀업 방식으로 직접 수립</span></li>
+            <li><strong>TASK 02 발표 (10주차)</strong> — 3팀 운영 전략안</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 R&R -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">신규입사자 R&R (오너십 범위)</div>
+      <div class="section-line"></div>
+    </div>
+    <div style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+      마케팅 실행에 국한하지 않습니다. 제품을 띄우는 데 필요하다고 판단되면 아래 모든 영역을 적극적으로 요청하고 주도해 주세요.
+    </div>
+    <div class="rr-grid">
+      <div class="rr-item">
+        <div class="rr-num">R&R 01</div>
+        <div class="rr-title">팀 목표 관리</div>
+        <ul class="rr-list">
+          <li><span class="editable" contenteditable="false">라이프마케팅실 목표에 연계된 팀/팀원별 KPI 설정 및 관리</span></li>
+          <li><span class="editable" contenteditable="false">주간/월간 성과 리뷰 주도</span></li>
+          <li><span class="editable" contenteditable="false">분기 사업계획 바텀업 방식으로 직접 수립</span></li>
+        </ul>
+      </div>
+      <div class="rr-item">
+        <div class="rr-num">R&R 02</div>
+        <div class="rr-title">제품 마케팅 전략</div>
+        <ul class="rr-list">
+          <li><span class="editable" contenteditable="false">담당 SKU A-Z 마케팅 전략 설계 및 실행</span></li>
+          <li><span class="editable" contenteditable="false">신제품 GTM 전략 — 타겟, 메시지, 채널 믹스</span></li>
+          <li><span class="editable" contenteditable="false">부진 SKU 회생 플랜 수립 및 실행</span></li>
+        </ul>
+      </div>
+      <div class="rr-item">
+        <div class="rr-num">R&R 03</div>
+        <div class="rr-title">크리에이티브 & 상세페이지</div>
+        <ul class="rr-list">
+          <li><span class="editable" contenteditable="false">킬콘 소재 기획 및 촬영 방향 설정 (2팀 협업)</span></li>
+          <li><span class="editable" contenteditable="false">상세페이지 개선 요청 주도 (D2C팀 협업)</span></li>
+          <li><span class="editable" contenteditable="false">제품 스토리텔링 및 핵심 메시지 설계</span></li>
+        </ul>
+      </div>
+      <div class="rr-item">
+        <div class="rr-num">R&R 04</div>
+        <div class="rr-title">팀원 육성 및 조직 운영</div>
+        <ul class="rr-list">
+          <li><span class="editable" contenteditable="false">팀원 역량/태도 정기 평가</span></li>
+          <li><span class="editable" contenteditable="false">팀 운용 방안 기획 및 실행</span></li>
+          <li><span class="editable" contenteditable="false">신규 팀원 온보딩 지원</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 협업 구조 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">협업 구조 — 함께 만드는 성과</div>
+      <div class="section-line"></div>
+    </div>
+    <div style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+      도근님 혼자 달리는 것보다, 아래 조직들과 잘 연결될 때 성과가 극대화됩니다. 협업 구조를 직접 설계하고 이끌어 주세요.
+    </div>
+    <div class="collab-grid">
+      <div class="collab-item">
+        <div class="collab-org">마케팅 2팀 (희강님)</div>
+        <div class="collab-desc"><span class="editable" contenteditable="false">킬콘 소재 협업 — 골반/관절 신제품 소재 공동 기획 및 제작</span></div>
+      </div>
+      <div class="collab-item">
+        <div class="collab-org">D2C팀</div>
+        <div class="collab-desc"><span class="editable" contenteditable="false">온사이트·CRM·바이럴 연결 / 상세페이지 개선 요청 — 신제품 풀 퍼널 전환 구조 설계</span></div>
+      </div>
+      <div class="collab-item">
+        <div class="collab-org">BM팀</div>
+        <div class="collab-desc"><span class="editable" contenteditable="false">인플루언서·PPL·BDC 협업 요청 — 브랜드 인지 및 자산 확장</span></div>
+      </div>
+      <div class="collab-item">
+        <div class="collab-org">MD허브 / 상품전략팀</div>
+        <div class="collab-desc"><span class="editable" contenteditable="false">신제품 출시 타이밍·전략 일치화 주도</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px; padding:14px 20px; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:10px; font-size:13px; color:var(--text-muted);">
+      <strong style="color:var(--text);">한 가지 부탁드립니다.</strong> 여기서는 성과도 중요하지만, 같이 만들어가는 과정도 똑같이 중요하게 봅니다. 팀장님들끼리 서로 잘 연결되는 것이 라이프마케팅실 전체의 목표입니다.
+    </div>
+  </div>
+
+  <!-- 05 온보딩 과제 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">온보딩 과제</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num-badge">TASK 01</div>
+        <div class="task-title">제품별 전략 기획서</div>
+        <div class="task-date">입사 5주차 발표</div>
+      </div>
+      <div class="task-body">
+        <div>
+          <div class="task-section-title">검증할 역량</div>
+          <ul class="task-items">
+            <li><div class="item-dot"></div><div><strong>사업 기획력</strong> — 신제품을 시장에서 살아남게 만드는 A-Z 전략을 직접 설계하는 능력</div></li>
+            <li><div class="item-dot"></div><div><strong>데이터×크리에이티브 통합력</strong> — 성과 데이터를 소재·상세페이지 방향으로 연결하고 수치 기반으로 판단하는 능력</div></li>
+            <li><div class="item-dot"></div><div><strong>조직 연결력</strong> — 타 팀과의 협업 구조를 직접 설계하고 실제 성과로 만드는 능력</div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">과제 목표</div>
+          <ul class="task-items">
+            <li><div class="item-dot"></div>골반마사지기 카테고리 선점 전략과 팔꿈치→무릎으로 이어지는 관절 카테고리 확장 로드맵을 설계함. 부진 SKU 회생 실제 성과 수치와 전략 로드맵이 반드시 연결되어야 함. 협업(BM팀, D2C팀, MD허브팀)을 통해 만들어낸 성과도 함께 정리함.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">Output</div>
+          <ul class="task-items">
+            <li><div class="item-dot"></div><div><strong>골반마사지기 GTM 전략</strong> — 타겟 정의, 핵심 메시지, 채널 믹스, 소재 방향 (Meta → GFA → 유튜브 확장 시나리오 포함)</div></li>
+            <li><div class="item-dot"></div><div><strong>부진 SKU 회생 결과 리포트</strong> — <span class="editable" contenteditable="false">허리/발편케어 실제 성과 수치 포함, 회생 전략 요약</span></div></li>
+            <li><div class="item-dot"></div><div><strong>관절 카테고리 확장 로드맵</strong> — 팔꿈치마사지기 → 27년 무릎마사지기로 이어지는 카테고리 빌드업 전략</div></li>
+            <li><div class="item-dot"></div><div><strong>협업 성과 정리</strong> — <span class="editable" contenteditable="false">BM팀·D2C팀·MD허브팀과의 협업 구조 및 실제 결과 요약</span></div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">Output Guide</div>
+          <ul class="task-items">
+            <li><div class="item-dot"></div><span class="editable" contenteditable="false">"어떤 채널에 얼마를 쓸지"보다 "왜 이 제품이 이 시장에서 이길 수 있는가"를 먼저 설명하세요. 경쟁사 없는 블루오션이라는 것을 어떻게 빠르게 선점할지 논리 구조가 핵심입니다.</span></li>
+            <li><div class="item-dot"></div><span class="editable" contenteditable="false">부진 SKU 회생 파트는 반드시 실제 수치(공헌이익, 광고비, 매출 변화)가 포함되어야 합니다. "이렇게 했더니 이렇게 됐다"의 흐름으로 작성해 주세요.</span></li>
+            <li><div class="item-dot"></div><span class="editable" contenteditable="false">관절 카테고리 로드맵은 팔꿈치 → 무릎으로 이어지는 제품 확장이 마케팅 관점에서 어떤 시너지를 만드는지까지 포함해 주세요. 단순 제품 나열이 아닌 카테고리 전략입니다.</span></li>
+            <li><div class="item-dot"></div><span class="editable" contenteditable="false">실제 성과 수치가 반드시 나와야 하며, 전략 로드맵과 필히 연결되어야 합니다.</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">Resource</div>
+          <div class="resource-row">
+            <div class="resource-chip"><span>발표 날짜</span>입사 후 5주차</div>
+            <div class="resource-chip"><span>총 시간</span>30분</div>
+            <div class="resource-chip"><span>발표</span>20분</div>
+            <div class="resource-chip"><span>Q&A</span>10분</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num-badge t2">TASK 02</div>
+        <div class="task-title">3팀 운영 전략안</div>
+        <div class="task-date">입사 10주차 발표</div>
+      </div>
+      <div class="task-body">
+        <div>
+          <div class="task-section-title">검증할 역량</div>
+          <ul class="task-items">
+            <li><div class="item-dot blue"></div><div><strong>전략적 목표 연결력</strong> — 라이프마케팅실 목표를 팀·개인 단위까지 구조화하는 능력</div></li>
+            <li><div class="item-dot blue"></div><div><strong>조직 설계력</strong> — 팀원 역량을 파악하고 적재적소에 배치하는 리더십</div></li>
+            <li><div class="item-dot blue"></div><div><strong>실행 기획력</strong> — 목표를 실제 운영 가능한 체계(회의, 피드백, 평가)로 구체화하는 능력</div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">과제 목표</div>
+          <ul class="task-items">
+            <li><div class="item-dot blue"></div>담당 SKU 성과를 만들어내기 위한 팀 운영 구조를 직접 설계하고, 라이프마케팅실 목표부터 팀원 개인 KPI까지 연결되는 목표 체계 수립 역량을 검증함. 팀원 역량·태도 파악을 바탕으로 한 현실적인 팀 운용 방향도 함께 제안함.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">Output</div>
+          <ul class="task-items">
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">목표 체계도 — 라이프마케팅실 목표 → 팀 목표 → 팀원 개인 목표 연결 구조</span></li>
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">팀원별 R&R 및 SKU 담당 배분안 (역량·태도 평가 결과 반영)</span></li>
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">팀 운영 방안 — 회의 주기, 성과 리뷰 체계, 피드백 프로세스, 팀원 육성 계획</span></li>
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">부진 SKU 회생 방향 초안 및 골반마사지기 진입 전략 방향</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">Output Guide</div>
+          <ul class="task-items">
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">먼저 라이프마케팅실의 목표 지표를 확인하고, 담당 SKU 목표치와 어떻게 연결되는지 위→아래 방향으로 목표 체계를 그려보세요.</span></li>
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">팀원 개별 면담을 완료하고, 역량(마케팅 실무 숙련도, 전략 기획력 등)과 태도(자기주도성, 협업 방식 등) 두 축으로 간단히 평가해 배치안에 반영하세요.</span></li>
+            <li><div class="item-dot blue"></div><span class="editable" contenteditable="false">팀 운영 방안은 "이상적인 그림"보다 현재 팀 상황에서 바로 실행 가능한 수준으로 작성해 주세요. 월별 마일스톤과 함께 제시하면 더 좋습니다.</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="task-section-title">Resource</div>
+          <div class="resource-row">
+            <div class="resource-chip"><span>발표 날짜</span>입사 후 10주차</div>
+            <div class="resource-chip"><span>총 시간</span>30분</div>
+            <div class="resource-chip"><span>발표</span>20분</div>
+            <div class="resource-chip"><span>Q&A</span>10분</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggleEdit() {
+    const body = document.body;
+    const btn = document.getElementById('editBtn');
+    const btnText = document.getElementById('editBtnText');
+    const editables = document.querySelectorAll('.editable');
+    const isEditing = body.classList.toggle('edit-mode');
+    editables.forEach(el => { el.contentEditable = isEditing ? 'true' : 'false'; });
+    btn.classList.toggle('active', isEditing);
+    btnText.textContent = isEditing ? '수정 완료' : '수정하기';
+  }
+
+  function downloadHTML() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '오도근_온보딩문서_v2.html';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>
